@@ -36,3 +36,6 @@ build/
 
 ### Mac OS ###
 .DS_Store
+logs/debug.log
+logs/error.log
+logs/info.log
