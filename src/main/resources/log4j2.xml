@@ -1,58 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
     <Properties>
-        <Property name="LOG_PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} || [%t] || %-5level || %logger{36} || (Line: %L) || %msg%n</Property>
+        <Property name="LOG_PATTERN">[thread_id: %t] || %d{dd-MM-yyyy HH:mm:ss.SSS} || [%t] || %-5level || %logger{36} || (%F: %L) || %msg%n</Property>
         <Property name="LOG_PATH">logs</Property>
     </Properties>
 
     <Appenders>
-        <Console name="Console" target="SYSTEM_OUT">
+        <!-- Console Appender -->
+        <Console name="Console" target="SYSTEM_OUT" follow="true">
             <PatternLayout pattern="${LOG_PATTERN}" />
         </Console>
 
-        <RollingFile name="InfoFile" fileName="${LOG_PATH}/info.log"
-                     filePattern="${LOG_PATH}/info-%d{yyyy-MM-dd}.log.gz">
+        <!-- Rolling File Appender for Info Logs -->
+        <RollingFile name="InfoFile"
+                     fileName="${LOG_PATH}/info/info.log"
+                     filePattern="${LOG_PATH}/info/info-%d{dd-MM-yyyy}-%i.log.gz">
             <PatternLayout pattern="${LOG_PATTERN}" />
             <Policies>
-                <TimeBasedTriggeringPolicy />
-                <SizeBasedTriggeringPolicy size="10MB" />
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="50MB" />
             </Policies>
+            <Filters>
+                <ThresholdFilter level="ERROR" onMatch="DENY" onMismatch="ACCEPT" />
+            </Filters>
         </RollingFile>
 
-        <RollingFile name="ErrorFile" fileName="${LOG_PATH}/error.log"
-                     filePattern="${LOG_PATH}/error-%d{yyyy-MM-dd}.log.gz">
+        <!-- Rolling File Appender for Error Logs -->
+        <RollingFile name="ErrorFile"
+                     fileName="${LOG_PATH}/error/error.log"
+                     filePattern="${LOG_PATH}/error/error-%d{dd-MM-yyyy}-%i.log.gz">
             <PatternLayout pattern="${LOG_PATTERN}" />
             <Policies>
-                <TimeBasedTriggeringPolicy />
-                <SizeBasedTriggeringPolicy size="10MB" />
-            </Policies>
-        </RollingFile>
-
-        <RollingFile name="DebugFile" fileName="${LOG_PATH}/debug.log"
-                     filePattern="${LOG_PATH}/debug-%d{yyyy-MM-dd}.log.gz">
-            <PatternLayout pattern="${LOG_PATTERN}" />
-            <Policies>
-                <TimeBasedTriggeringPolicy />
-                <SizeBasedTriggeringPolicy size="10MB" />
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="50MB" />
             </Policies>
         </RollingFile>
     </Appenders>
 
     <Loggers>
-        <Logger name="com.example.debug" level="DEBUG" additivity="false">
-            <AppenderRef ref="DebugFile" />
-        </Logger>
-
+        <!-- Logger for Info Level -->
         <Logger name="com.example.info" level="INFO" additivity="false">
             <AppenderRef ref="InfoFile" />
         </Logger>
 
+        <!-- Logger for Error Level -->
         <Logger name="com.example.error" level="ERROR" additivity="false">
             <AppenderRef ref="ErrorFile" />
         </Logger>
 
-        <Root level="INFO">
+        <!-- Root Logger -->
+        <Root level="info">
             <AppenderRef ref="Console" />
+            <AppenderRef ref="InfoFile" />
+            <AppenderRef ref="ErrorFile" />
         </Root>
     </Loggers>
 </Configuration>
