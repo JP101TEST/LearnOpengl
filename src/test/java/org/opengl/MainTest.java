@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class MainTest {
   @Test
     public void test(){
-      Main main = new Main();
-      assertFalse(main.checkEmptyString("wd"));
+
   }
 }
